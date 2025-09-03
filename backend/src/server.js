@@ -8,13 +8,12 @@ dotenv.config();
 const app = express();
 const router = express.Router();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN }));
-app.use(express.json());
+app.use(cors({ 
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'] 
+}));
 
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Methods', 'GET');
-  next();
-});
+app.use(express.json());
 
 router.get('/health', (req, res) => {
   res.status(200).send('Ok');
