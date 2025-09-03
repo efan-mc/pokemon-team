@@ -1,8 +1,15 @@
-const express = require('express')
-const http = require('http');
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const router = express.Router();
+
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
+app.use(express.json());
 
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET');
@@ -15,5 +22,13 @@ router.get('/health', (req, res) => {
 
 app.use('/api/v1', router);
 
+const port = process.env.PORT || 3000;
 const server = http.createServer(app);
-server.listen(3000);
+
+server.listen(port, () => {
+  console.log(`Backend running at http://localhost:${port}`);
+});
+
+server.on('error', (err) => {
+  console.error('Server error:', err);
+});
