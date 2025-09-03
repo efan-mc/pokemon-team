@@ -13,3 +13,34 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Team {
+  id String @id @default(uuid())
+  slug String @unique
+  name String?
+  format String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members TeamMember[]
+}
+
+model TeamMember {
+  id String @id @default(uuid())
+  teamId String
+  slot Int
+  species String
+  nickname String?
+  ability String?
+  item String?
+  teraType String?
+  nature String?
+  evs Json?
+  ivs Json?
+  moves Json?
+  types Json?
+  spriteUrl String?
+
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([teamId, slot])
+}
