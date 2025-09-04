@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { registerTeamRoutes } from './src/api/teams.js';
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 router.get('/health', (req, res) => {
   res.status(200).send('Ok');
 });
+
+registerTeamRoutes(router);
 
 app.use('/api/v1', router);
 
