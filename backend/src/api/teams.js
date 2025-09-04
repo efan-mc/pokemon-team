@@ -27,7 +27,7 @@ export function registerTeamRoutes(router) {
             for (let i = 0; i < pokemon.length; i++) {
                 const mon = pokemon[i];
 
-                if (!mon || typeof mon.species !== 'string') {
+                if (!mon || typeof mon.species !== 'string' || mon.species.trim().length === 0) {
                     return res.status(400).json({
                         error: `member ${i + 1}: species is required`
                     })
