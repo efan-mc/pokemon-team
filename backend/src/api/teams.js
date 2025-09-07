@@ -1,5 +1,6 @@
 import { makeSlug } from "../services/slug.js";
 import { createTeam } from "../services/createTeam.js"
+import { getTeamBySlug } from "../services/getTeam.js";
 
 export function registerTeamRoutes(router) {
     router.post('/teams', async (req, res) => {
@@ -55,4 +56,32 @@ export function registerTeamRoutes(router) {
             return res.status(500).json({ error: 'failed to create team' });
         }
     });
+
+    router.get('/teams/:slug', async (req, res) => {
+        try {
+            const { slug } = req.params
+
+            if (!slug || slug.trim().length === 0) {
+                return res.status(400).json({
+                    error: 'Team slug parameter is required'
+                });
+            }
+
+            const team = await getTeamBySlug(slug.trim());
+
+            if (!team) {
+                return res.status(404).json({
+                    error: 'Team not found'
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                data: team
+            });
+
+        } catch (error) {
+            return res.status(500).json({ error: 'failed to fetch team'});
+        }
+    })
 }
