@@ -83,5 +83,5 @@ export function registerTeamRoutes(router) {
         } catch (error) {
             return res.status(500).json({ error: 'failed to fetch team'});
         }
-    })
+    });
 }
