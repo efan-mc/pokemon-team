@@ -24,11 +24,11 @@ export async function validateSpecies(species) {
                     id: pokemonData.id,
                     name: pokemonData.name,
                     types: pokemonData.types.map(t => t.type.name),
-                    abilities: pokemonData.abilities.map(a => ({
+                    abilities: pokemonData.abilitiy.map(a => ({
                         name: a.abilities.name,
                         isHidden: a.is_hidden
                     })),
-                    sprites: pokemonData.sprites,
+                    sprites: pokemonData.sprites?.front_default,
                     height: pokemonData.height,
                     weight: pokemonData.weight,
                     stats: pokemonData.stats.map(s => ({
