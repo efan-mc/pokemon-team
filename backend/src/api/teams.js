@@ -1,6 +1,7 @@
 import { makeSlug } from "../services/slug.js";
 import { createTeam } from "../services/createTeam.js"
 import { getTeamBySlug } from "../services/getTeam.js";
+import { validateSpecies } from "../services/validatePokemon.js";
 
 export function registerTeamRoutes(router) {
     router.post('/teams', async (req, res) => {
@@ -24,6 +25,9 @@ export function registerTeamRoutes(router) {
                     error: 'Pokemon Team cannot exceed 6 members'
                 });
             }
+
+            const speciesArray = pokemon.map(mon => mon?.species || "");
+            const validation = await validateSpecies(speciesArray)
 
             for (let i = 0; i < pokemon.length; i++) {
                 const mon = pokemon[i];
