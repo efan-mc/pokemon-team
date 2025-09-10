@@ -1,6 +1,7 @@
 import { makeSlug } from "../services/slug.js";
 import { createTeam } from "../services/createTeam.js"
 import { getTeamBySlug } from "../services/getTeam.js";
+import { validateTeam } from "../services/validatePokemon.js";
 
 export function registerTeamRoutes(router) {
     router.post('/teams', async (req, res) => {
@@ -25,8 +26,18 @@ export function registerTeamRoutes(router) {
                 });
             }
 
+            const speciesArray = pokemon.map(mon => mon?.species || "");
+            const validation = await validateTeam(speciesArray)
+
+            if (!validation.valid) {
+                return res.status(400).json({
+                        error: 'Pokemon validation failed',
+                        details: validation.errors
+                    }); 
+            }
+
             for (let i = 0; i < pokemon.length; i++) {
-                const mon = pokemon[i];
+            const mon = pokemon[i];
 
                 if (!mon || typeof mon.species !== 'string' || mon.species.trim().length === 0) {
                     return res.status(400).json({
@@ -43,8 +54,28 @@ export function registerTeamRoutes(router) {
                 }
             }
 
+            const enrichedPokemon = pokemon.map((mon, index) => {
+                const validationResult = validation.results[index];
+                const apiData = validationResult.valid ? validationResult.data : null;
+
+                return {
+                    ...mon,
+                    species: apiData?.name || mon.species,
+                    types: apiData?.types || null,
+                    spriteUrl: apiData?.sprites || null,
+                    nickname: mon.nickname || null,
+                    ability: mon.ability || null,
+                    item: mon.item || null,
+                    teraType: mon.tera || mon.teraType || null,
+                    nature: mon.nature || null,
+                    evs: mon.evs || null,
+                    ivs: mon.ivs || null,
+                    moves: mon.moves || null
+                };
+            });
+
             const slug = makeSlug();
-            const newTeam = await createTeam({ name, pokemon, format, slug });
+            const newTeam = await createTeam({ name, pokemon: enrichedPokemon, format, slug });
 
             res.status(201).json({
                 success: true, 

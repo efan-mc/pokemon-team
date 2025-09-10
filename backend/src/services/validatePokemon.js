@@ -1,3 +1,11 @@
+const VALID_NATURES = [
+    'hardy', 'lonely', 'brave', 'adamant', 'naughty',
+    'bold', 'docile', 'relaxed', 'impish', 'lax',
+    'timid', 'hasty', 'serious', 'jolly', 'naive',
+    'modest', 'mild', 'quiet', 'bashful', 'rash',
+    'calm', 'gentle', 'sassy', 'careful', 'quirky'
+];
+
 export async function validateSpecies(species) {
     if (!species || typeof species !== 'string') {
         return { valid: false, error: 'species name required' }
@@ -8,17 +16,27 @@ export async function validateSpecies(species) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${cleanSpecies}`);
 
+        let result
+
         if (response.ok) {
             const pokemonData = await response.json();
-            return {
+            result = {
                 valid: true,
                 data: {
                     id: pokemonData.id,
                     name: pokemonData.name,
                     types: pokemonData.types.map(t => t.type.name),
-                    sprites: pokemonData.sprites,
+                    abilities: pokemonData.abilities.map(a => ({
+                        name: a.ability.name,
+                        isHidden: a.is_hidden
+                    })),
+                    sprites: pokemonData.sprites?.front_default,
                     height: pokemonData.height,
-                    weight: pokemonData.weight
+                    weight: pokemonData.weight,
+                    stats: pokemonData.stats.map(s => ({
+                        name: s.stat.name,
+                        baseStat: s.base_stat
+                    }))
                 }
             };
         } else if (response.status === 404) {
@@ -26,8 +44,47 @@ export async function validateSpecies(species) {
         } else {
             return { valid: false, error: `API Error: ${response.statusText}`};
         }
+
+        return result;
     } catch (error) {
+        console.error('Pokemon validation error:', error);
         return { valid: false, error: 'Failed to validate pokemon'};
+    }
+}
+
+export async function validateMove(moveName) {
+    if (!moveName || typeof moveName !== 'string') {
+        return { valid: false, error: 'Move name required' };
+    }
+    
+    const cleanMove = moveName.toLowerCase().trim().replace(/\s+/g, '-');
+    
+    try {
+        const response = await fetch(`https://pokeapi.co/api/v2/move/${cleanMove}`);
+        
+        let result;
+        if (response.ok) {
+            const moveData = await response.json();
+            result = {
+                valid: true,
+                data: {
+                    name: moveData.name,
+                    type: moveData.type.name,
+                    power: moveData.power,
+                    accuracy: moveData.accuracy,
+                    pp: moveData.pp
+                }
+            };
+        } else if (response.status === 404) {
+            result = { valid: false, error: `Move "${moveName}" not found` };
+        } else {
+            result = { valid: false, error: `API Error: ${response.status} ${response.statusText}` };
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Move validation error:', error);
+        return { valid: false, error: 'Failed to validate move' };
     }
 }
 
