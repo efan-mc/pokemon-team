@@ -16,6 +16,8 @@ export async function validateSpecies(species) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${cleanSpecies}`);
 
+        let result
+
         if (response.ok) {
             const pokemonData = await response.json();
             result = {
@@ -24,8 +26,8 @@ export async function validateSpecies(species) {
                     id: pokemonData.id,
                     name: pokemonData.name,
                     types: pokemonData.types.map(t => t.type.name),
-                    abilities: pokemonData.abilitiy.map(a => ({
-                        name: a.abilities.name,
+                    abilities: pokemonData.abilities.map(a => ({
+                        name: a.ability.name,
                         isHidden: a.is_hidden
                     })),
                     sprites: pokemonData.sprites?.front_default,
@@ -45,6 +47,7 @@ export async function validateSpecies(species) {
 
         return result;
     } catch (error) {
+        console.error('Pokemon validation error:', error);
         return { valid: false, error: 'Failed to validate pokemon'};
     }
 }
