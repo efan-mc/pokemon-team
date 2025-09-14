@@ -215,3 +215,20 @@ export function calculateTeamWeaknesses(pkmnTeam) {
 
     return weaknessCount;
 }
+
+export function calculateTeamSummary(teamWeaknesses) {
+    const summary = {};
+
+    Object.entries(teamWeaknesses).forEach(([attackingType, pokemonList]) => {
+      const weakCount = pokemonList.filter(p => p.effectiveness > 1).length;
+      if (weakCount > 0) {
+        summary[attackingType] = weakCount;
+      }
+    });
+
+    return summary;
+}
+
+export function getTopRisks(teamSumary) {
+  
+}
