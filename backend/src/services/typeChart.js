@@ -200,17 +200,18 @@ export function calculateTeamWeaknesses(pkmnTeam) {
     const weaknessCount = {};
 
     pkmnTeam.forEach(pokemon => {
-      if (!POKEMON_TYPES.includes(type)) {
-          throw new Error(`Invalid pokemon type: ${type}`);
-      }
-
-      const weaknesses = calculatePokemonWeaknesses(pokemon);
+      const weaknesses = calculatePokemonWeaknesses(pokemon.types);
 
       Object.entries(weaknesses).forEach(([attackingType, effectiveness]) => {
         if (!weaknessCount[attackingType]) {
           weaknessCount[attackingType] = [];
         }
-    })
+        weaknessCount[attackingType].push({
+          pokemon: pokemon.name || 'Unknown',
+          effectiveness
+        });
+      });
     });
 
+    return weaknessCount;
 }
