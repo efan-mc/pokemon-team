@@ -192,9 +192,25 @@ export function calculatePokemonWeaknesses(pkmnTypes) {
     return weaknesses;
 }
 
-function calculateTeamWeaknesses(pkmnTeam) {
-    if (!POKEMON_TYPES.includes(pkmnTypes)) {
-        throw new Error(`Invalid attacking type: ${attackingType}`);
+export function calculateTeamWeaknesses(pkmnTeam) {
+    if (!Array.isArray(pkmnTeam)) {
+        throw new Error(`Pokemon team must be an array`);
     }
+
+    const weaknessCount = {};
+
+    pkmnTeam.forEach(pokemon => {
+      if (!POKEMON_TYPES.includes(type)) {
+          throw new Error(`Invalid pokemon type: ${type}`);
+      }
+
+      const weaknesses = calculatePokemonWeaknesses(pokemon);
+
+      Object.entries(weaknesses).forEach(([attackingType, effectiveness]) => {
+        if (!weaknessCount[attackingType]) {
+          weaknessCount[attackingType] = [];
+        }
+    })
+    });
 
 }
