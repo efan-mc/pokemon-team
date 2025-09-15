@@ -229,6 +229,17 @@ export function calculateTeamSummary(teamWeaknesses) {
   return summary;
 }
 
-export function getTopRisks(teamSumary) {
+export function getWeaknessBreakdown(teamSummary) {
+  if (teamSummary === undefined || Object.keys(teamSummary).length == 0) {
+    throw new Error(`No team entered`);
+  }
+
+  const sortedObject = Object.entries(teamSummary)
+    .sort((a, b) => b[1] - a[1]);
   
+  const sortedArray = sortedObject.map(([type, count]) => ({
+    type, count
+  }));
+
+  return sortedArray;
 }
