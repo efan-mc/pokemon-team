@@ -159,74 +159,74 @@ export const TYPE_EFFECTIVENESS = {
 };
 
 export function calculatePokemonWeaknesses(pkmnTypes) {
-    if (!Array.isArray(pkmnTypes)) {
-        throw new Error(`Pokemon types must be an array`);
+  if (!Array.isArray(pkmnTypes)) {
+    throw new Error(`Pokemon types must be an array`);
+  }
+
+  for (const type of pkmnTypes) {
+    if (!POKEMON_TYPES.includes(type)) {
+      throw new Error(`Invalid pokemon type: ${type}`);
+    }
+  }
+
+  const weaknesses = {}
+
+  for (const attackingType of POKEMON_TYPES) {
+    let effectiveness = 1;
+
+    for (const defendingType of pkmnTypes) {
+      if (TYPE_EFFECTIVENESS[attackingType].superEffectiveAgainst?.includes(defendingType)) {
+        effectiveness *= 2;
+      } else if (TYPE_EFFECTIVENESS[attackingType].notVeryEffectiveAgainst?.includes(defendingType)) {
+        effectiveness *= 0.5;
+      } else if (TYPE_EFFECTIVENESS[attackingType].noEffectAgainst?.includes(defendingType)) {
+        effectiveness *= 0;
+      }
     }
 
-    for (const type of pkmnTypes) {
-        if (!POKEMON_TYPES.includes(type)) {
-            throw new Error(`Invalid pokemon type: ${type}`);
-        }
+    if (effectiveness !== 1) {
+      weaknesses[attackingType] = effectiveness;
     }
+  }
 
-    const weaknesses = {}
-
-    for (const attackingType of POKEMON_TYPES) {
-        let effectiveness = 1;
-
-        for (const defendingType of pkmnTypes) {
-            if (TYPE_EFFECTIVENESS[attackingType].superEffectiveAgainst?.includes(defendingType)) {
-                effectiveness *= 2;
-            } else if (TYPE_EFFECTIVENESS[attackingType].notVeryEffectiveAgainst?.includes(defendingType)) {
-                effectiveness *= 0.5;
-            } else if (TYPE_EFFECTIVENESS[attackingType].noEffectAgainst?.includes(defendingType)) {
-                effectiveness *= 0;
-            }
-        }
-
-        if (effectiveness !== 1) {
-            weaknesses[attackingType] = effectiveness;
-        }
-    }
-
-    return weaknesses;
+  return weaknesses;
 }
 
 export function calculateTeamWeaknesses(pkmnTeam) {
-    if (!Array.isArray(pkmnTeam)) {
-        throw new Error(`Pokemon team must be an array`);
-    }
+  if (!Array.isArray(pkmnTeam)) {
+    throw new Error(`Pokemon team must be an array`);
+  }
 
-    const weaknessCount = {};
+  const weaknessCount = {};
 
-    pkmnTeam.forEach(pokemon => {
-      const weaknesses = calculatePokemonWeaknesses(pokemon.types);
+  pkmnTeam.forEach(pokemon => {
+    const weaknesses = calculatePokemonWeaknesses(pokemon.types);
 
-      Object.entries(weaknesses).forEach(([attackingType, effectiveness]) => {
-        if (!weaknessCount[attackingType]) {
-          weaknessCount[attackingType] = [];
-        }
-        weaknessCount[attackingType].push({
-          pokemon: pokemon.name || 'Unknown',
-          effectiveness
-        });
+    Object.entries(weaknesses).forEach(([attackingType, effectiveness]) => {
+      if (!weaknessCount[attackingType]) {
+        weaknessCount[attackingType] = [];
+      }
+      weaknessCount[attackingType].push({
+        pokemon: pokemon.name || 'Unknown',
+        effectiveness
       });
     });
+  });
 
-    return weaknessCount;
+  return weaknessCount;
 }
 
 export function calculateTeamSummary(teamWeaknesses) {
-    const summary = {};
+  const summary = {};
 
-    Object.entries(teamWeaknesses).forEach(([attackingType, pokemonList]) => {
-      const weakCount = pokemonList.filter(p => p.effectiveness > 1).length;
-      if (weakCount > 0) {
-        summary[attackingType] = weakCount;
-      }
-    });
+  Object.entries(teamWeaknesses).forEach(([attackingType, pokemonList]) => {
+    const weakCount = pokemonList.filter(p => p.effectiveness > 1).length;
+    if (weakCount > 0) {
+      summary[attackingType] = weakCount;
+    }
+  });
 
-    return summary;
+  return summary;
 }
 
 export function getTopRisks(teamSumary) {
