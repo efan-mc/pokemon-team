@@ -88,37 +88,6 @@ export async function validateMove(moveName) {
     }
 }
 
-export async function validateType(type) {
-    if (!type || typeof type !== 'string') {
-        return { valid: false, error: 'type required' }
-    };
-
-    const cleanType = type.toLowerCase().trim();
-
-    try {
-        const response = await fetch(`https://pokeapi.co/api/v2/type/${cleanType}`);
-
-        if (response.ok) {
-            const typeData = await response.json();
-            return {
-                valid: true,
-                data: {
-                    name: typeData.name,
-                    weaknesses: typeData.damage_relations.double_damage_from.map(t => t.name),
-                    resistances: typeData.damage_relations.half_damage_from.map(t => t.name),
-                    immunities: typeData.damage_relations.no_damage_from.map(t => t.name),
-                }
-            }
-        } else if (response.status === 404) {
-            return { valid: false, error: `Type "${type}" not found`};
-        } else {
-            return { valid: false, error: `API Error: ${response.status}`};
-        }
-    } catch (error) {
-        return { valid: false, error: 'Failed to validate type'};
-    }
-}
-
 export async function validateTeam(team) {
     if (!Array.isArray(team)) {
         return { valid: false, error: 'Team must be an array', results: [] }
