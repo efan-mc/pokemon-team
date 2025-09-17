@@ -3,6 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { registerTeamRoutes } from './src/api/teams.js';
+import { registerAnalysisRoutes } from './src/api/analysis.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ router.get('/health', (req, res) => {
 });
 
 registerTeamRoutes(router);
+registerAnalysisRoutes(router);
 
 app.use('/api/v1', router);
 
