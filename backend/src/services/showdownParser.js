@@ -10,8 +10,8 @@ function parseFirstLine(line, pokemon) {
         const openBra = namepart.indexOf('(');
         const closedBra = namepart.indexOf(')');
 
-        pokemon.species = namepart.substring(0, openBra).trim();
-        pokemon.nickname = namepart.substring(openBra + 1, closedBra).trim();
+        pokemon.nickname = namepart.substring(0, openBra).trim();
+        pokemon.species = namepart.substring(openBra + 1, closedBra).trim();
     } else {
         pokemon.species = namepart;
     }
@@ -40,7 +40,7 @@ function parseEvs(line) {
 
 export function parseShowdownPokemon(showdownText) {
     return showdownText.trim().split('\n\n').map(mon => {
-        const lines = block.trim().split('\n');
+        const lines = mon.trim().split('\n');
         const pokemon = {species: "", nickname: null, item: null, ability: null, 
             nature: null, evs: null, moves: []
     };
