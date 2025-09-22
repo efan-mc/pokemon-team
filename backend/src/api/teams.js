@@ -2,6 +2,7 @@ import { makeSlug } from "../services/slug.js";
 import { createTeam } from "../services/createTeam.js"
 import { getTeamBySlug } from "../services/getTeam.js";
 import { validateTeam } from "../services/validatePokemon.js";
+import { parseShowdownPokemon } from "../services/showdownParser.js";
 
 export function registerTeamRoutes(router) {
     router.post('/teams', async (req, res) => {
@@ -113,6 +114,74 @@ export function registerTeamRoutes(router) {
 
         } catch (error) {
             return res.status(500).json({ error: 'failed to fetch team'});
+        }
+    });
+
+    router.post('/teams/import', async (res, req) => {
+        try {
+            const { showdownText, name, format } = req.body;
+
+            if (!showdownText || !name) {
+                return res.status(400).json({
+                    error: 'Missing required fields: showdownText and name'
+                });
+            }
+
+            const pokemon = parseShowdownPokemon
+
+            if (!Array.isArray(pokemon) || pokemon.length === 0) {
+                return res.status(400).json({
+                    error: 'No valid Pokemon found in text'
+                });
+            }
+
+            if (pokemon.length > 6) {
+                return res.status(400).json({
+                    error: 'Team cannot exceed 6'
+                });
+            }
+
+            const speciesArray = pokemon.map(mon => mon.species);
+            const validatePokemon = await validateTeam(speciesArray)
+
+            if (!validatePokemon.valid) {
+                return res.status(400).json({
+                    error: 'Pokemon validation failed',
+                    details: validatePokemon.errors
+                });
+            }
+
+            const enrichedPokemon = pokemon.map((mon, index) => {
+                const validationResult = validation.results[index];
+                const apiData = validationResult.valid ? validationResult.data : null;
+
+                return {
+                    ...mon,
+                    species: apiData?.name || mon.species,
+                    types: apiData?.types || null,
+                    spriteUrl: apiData?.sprites || null,
+                    nickname: mon.nickname || null,
+                    ability: mon.ability || null,
+                    item: mon.item || null,
+                    teraType: mon.tera || mon.teraType || null,
+                    nature: mon.nature || null,
+                    evs: mon.evs || null,
+                    ivs: mon.ivs || null,
+                    moves: mon.moves || null
+                };
+            });
+
+            const slug = makeSlug();
+            const newTeam = await createTeam({ name, pokemon: enrichedPokemon, format, slug });
+
+            res.status(201).json({
+                success: true, 
+                data: newTeam
+            });
+            
+        } catch (error) {
+            console.error('Error importing team: ', error);
+            return res.status(500).json({ error: 'failed to import team' });
         }
     });
 }
