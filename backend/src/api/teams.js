@@ -117,7 +117,7 @@ export function registerTeamRoutes(router) {
         }
     });
 
-    router.post('/teams/import', async (res, req) => {
+    router.post('/teams/import', async (req, res) => {
         try {
             const { showdownText, name, format } = req.body;
 
@@ -127,7 +127,7 @@ export function registerTeamRoutes(router) {
                 });
             }
 
-            const pokemon = parseShowdownPokemon
+            const pokemon = parseShowdownPokemon(showdownText);
 
             if (!Array.isArray(pokemon) || pokemon.length === 0) {
                 return res.status(400).json({
@@ -152,7 +152,7 @@ export function registerTeamRoutes(router) {
             }
 
             const enrichedPokemon = pokemon.map((mon, index) => {
-                const validationResult = validation.results[index];
+                const validationResult = validatePokemon.results[index];
                 const apiData = validationResult.valid ? validationResult.data : null;
 
                 return {
