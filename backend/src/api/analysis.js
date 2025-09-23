@@ -1,4 +1,5 @@
 import { calculateTeamWeaknesses, calculateTeamSummary, getWeaknessBreakdown } from "../services/typeChart.js";
+import { parseShowdownPokemon } from "../services/showdownParser.js";
 
 export function registerAnalysisRoutes(router) {
     router.post('/team-analysis', async (req, res) => {
@@ -32,4 +33,15 @@ export function registerAnalysisRoutes(router) {
             return res.status(500).json({ error: 'failed to analyse' });
         }
     });
+
+    router.post('/test-parser', (req, res) => {
+        try {
+            const { showdownText } = req.body;
+            const result = parseShowdownPokemon(showdownText);
+
+            res.json({ success: true, parsed: result });
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
+    })
 }
