@@ -1,14 +1,13 @@
 import { useState } from "react";
 import "./App.css";
+import { testApiConnection } from "./test/apiTest";
 
 function App() {
   const [message, setMessage] = useState("");
 
   return (
     <>
-      <div>
-        <h1 className="text-red-500">Test</h1>
-      </div>
+      <button onClick={testApiConnection}>Test API</button>
     </>
   );
 }
