@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { registerTeamRoutes } from './src/api/teams.js';
 import { registerAnalysisRoutes } from './src/api/analysis.js';
+import { registerPokemonRoutes } from './src/api/pokemon.js';
 
 dotenv.config();
 
@@ -18,11 +19,12 @@ app.use(cors({
 app.use(express.json());
 
 router.get('/health', (req, res) => {
-  res.status(200).send('Ok');
+  res.status(200).json({ status: 'Ok' });
 });
 
 registerTeamRoutes(router);
 registerAnalysisRoutes(router);
+registerPokemonRoutes(router);
 
 app.use('/api/v1', router);
 
