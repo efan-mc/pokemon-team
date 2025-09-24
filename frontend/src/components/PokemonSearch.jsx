@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 
-export default function PokemonSearch({ onSelect }) {
+export default function PokemonSearch({ onSelect, onAdd }) {
   const [searchText, setSearchText] = useState("");
   const [pokemonNames, setPokemonNames] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   const fetchNames = async () => {
     if (pokemonNames.length > 0) return;
@@ -41,9 +45,18 @@ export default function PokemonSearch({ onSelect }) {
   }, [searchText, pokemonNames]);
 
   const handleSelect = (name) => {
-    setSearchText(name);
+    const result = capitalize(name);
+    setSearchText(result);
     setShowResults(false);
-    onSelect?.(name);
+    onSelect?.(result);
+  };
+
+  const handleAdd = () => {
+    if (searchText.trim() && onAdd) {
+      onAdd(searchText.trim());
+      setSearchText("");
+      setShowResults(false);
+    }
   };
 
   return (
@@ -59,6 +72,10 @@ export default function PokemonSearch({ onSelect }) {
         placeholder="Search Pokémon..."
       />
 
+      <button onClick={handleAdd} disabled={!searchText.trim()}>
+        Add
+      </button>
+
       {isLoading && <div>Loading...</div>}
 
       {showResults && searchResults.length > 0 && (
@@ -72,6 +89,12 @@ export default function PokemonSearch({ onSelect }) {
               {name}
             </div>
           ))}
+        </div>
+      )}
+
+      {showResults && !isLoading && searchResults.length == 0 && (
+        <div>
+          <h3>No results found</h3>
         </div>
       )}
     </div>

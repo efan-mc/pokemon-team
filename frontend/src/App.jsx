@@ -1,14 +1,63 @@
 import { useState } from "react";
 import "./App.css";
-import { testApiConnection } from "./test/apiTest";
+import TeamGrid from "./components/TeamGrid";
+import PokemonSearch from "./components/PokemonSearch";
+import { usePokemonApi } from "./hooks/usePokemonApi";
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [team, setTeam] = useState(Array(6).fill(null));
+  const { validatePokemon, isLoading, error } = usePokemonApi();
+
+  const addPokemonToTeam = async (pokemonName) => {
+    const emptySlot = team.findIndex((slot) => slot == null);
+    if (emptySlot === -1) {
+      alert("Team is full, remoev a Pokemon first");
+      return;
+    }
+
+    try {
+      const pokemonData = await validatePokemon(pokemonName);
+
+      const newTeam = [...team];
+      newTeam[emptySlot] = pokemonData;
+      setTeam(newTeam);
+    } catch (error) {
+      alert(`Failed to add Pokemon: ${error.message}`);
+    }
+  };
+
+  const removePokemon = (slotIndex) => {
+    const newTeam = [...team];
+    newTeam[slotIndex] = null;
+    setTeam(newTeam);
+  };
 
   return (
-    <>
-      <button onClick={testApiConnection}>Test API</button>
-    </>
+    <div>
+      <div>
+        <h1>Place Holder Title</h1>
+
+        <div>
+          <PokemonSearch onAdd={addPokemonToTeam} />
+          {isLoading && <div>Adding Pokemon to team...</div>}
+          {error && <div>Error: {error}</div>}
+        </div>
+
+        {/* Bug Testing */}
+        <div className="bg-gray-800">
+          <h3>Current Team:</h3>
+          {team.map((pokemon, index) => (
+            <div key={index}>
+              Slot {index + 1}:{" "}
+              {pokemon
+                ? `${pokemon.name}
+                  (${pokemon.types.join("/")})`
+                : "Empty"}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
