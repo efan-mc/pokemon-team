@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { usePokemonApi } from "./hooks/usePokemonApi";
+import { usePokemonDetails } from "./hooks/usePokemonDetails";
 import "./App.css";
 import TeamGrid from "./components/TeamGrid";
 import PokemonSearch from "./components/PokemonSearch";
@@ -8,6 +9,7 @@ import TeamCreationForm from "./components/TeamCreationForm";
 function App() {
   const [team, setTeam] = useState(Array(6).fill(null));
   const { validatePokemon, isLoading, error } = usePokemonApi();
+  const { fetchPokemonDetails } = usePokemonDetails();
   const [showTeamForm, setShowTeamForm] = useState(false);
 
   const addPokemonToTeam = async (pokemonName) => {
@@ -19,10 +21,12 @@ function App() {
 
     try {
       const pokemonData = await validatePokemon(pokemonName);
+      const pokemonDetails = await fetchPokemonDetails(pokemonName);
+
       const newTeam = [...team];
       newTeam[emptySlot] = {
         ...pokemonData,
-        availableAbilities: [],
+        availableAbilities: pokemonDetails.abilities,
         selectedAbility: null,
         selectedNature: null,
       };
