@@ -43,6 +43,8 @@ function App() {
           {error && <div>Error: {error}</div>}
         </div>
 
+        <TeamGrid team={team} onRemove={removePokemon} />
+
         {/* Bug Testing */}
         <div className="bg-gray-800">
           <h3>Current Team:</h3>

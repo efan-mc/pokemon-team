@@ -1,5 +1,5 @@
 import "./TypeIcons.css";
-import { TYPE_ICONS } from "../utilities/pokemonTypes";
+import { TYPE_ICONS } from "../utils/pokemonTypes";
 
 // Renders type icons for Pokemon Type
 export default function TypeIcons({ types = [] }) {
