@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { usePokemonApi } from "./hooks/usePokemonApi";
 import "./App.css";
 import TeamGrid from "./components/TeamGrid";
 import PokemonSearch from "./components/PokemonSearch";
-import { usePokemonApi } from "./hooks/usePokemonApi";
+import TeamCreationForm from "./components/TeamCreationForm";
 
 function App() {
   const [team, setTeam] = useState(Array(6).fill(null));
   const { validatePokemon, isLoading, error } = usePokemonApi();
+  const [showTeamForm, setShowTeamForm] = useState(false);
 
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
@@ -57,6 +59,22 @@ function App() {
                 : "Empty"}
             </div>
           ))}
+        </div>
+
+        <div>
+          <button onClick={() => setShowTeamForm(true)}>Save Team</button>
+        </div>
+
+        <div>
+          {showTeamForm && (
+            <TeamCreationForm
+              team={team}
+              onCreateTeam={(createdTeam) => {
+                console.log("Team created:", createdTeam);
+                // Optionally close form or keep it open
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiCall } from "../utils/api";
 
 export function usePokemonApi() {
     const [isLoading, setIsLoading] = useState(false);
@@ -9,25 +10,17 @@ export function usePokemonApi() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3000/api/v1/validate-pokemon', {
-                method: 'POST',
-                headers: { 'Content-Type' : 'application/json' },
-                body: JSON.stringify({ species: species.toLowerCase() })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Pokemon validation failed');
-            }
-
-            const pokemonData = await response.json();
-            return pokemonData;
-        } catch (err) {
-            setError(err.message);
-            throw err;
-        } finally {
-            setIsLoading(false);
-        }
+              const pokemonData = await apiCall('/validate-pokemon', {
+                  method: 'POST',
+                  body: { species: species.toLowerCase() }
+              });
+              return pokemonData;
+          } catch (err) {
+              setError(err.message);
+              throw err;
+          } finally {
+              setIsLoading(false);
+          }
     };
 
     return { validatePokemon, isLoading, error }
