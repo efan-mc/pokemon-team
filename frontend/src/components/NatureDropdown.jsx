@@ -35,6 +35,7 @@ export default function NatureDropdown({
     <select
       value={selectedNature || ""}
       onChange={(e) => onNatureChange(e.target.value || null)}
+      className="font-semibold bg-gray-700"
     >
       <option value="">{placeholder}</option>
       {natures.map((nature) => (

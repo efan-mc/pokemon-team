@@ -19,9 +19,13 @@ function App() {
 
     try {
       const pokemonData = await validatePokemon(pokemonName);
-
       const newTeam = [...team];
-      newTeam[emptySlot] = pokemonData;
+      newTeam[emptySlot] = {
+        ...pokemonData,
+        availableAbilities: [],
+        selectedAbility: null,
+        selectedNature: null,
+      };
       setTeam(newTeam);
     } catch (error) {
       alert(`Failed to add Pokemon: ${error.message}`);
@@ -31,6 +35,12 @@ function App() {
   const removePokemon = (slotIndex) => {
     const newTeam = [...team];
     newTeam[slotIndex] = null;
+    setTeam(newTeam);
+  };
+
+  const updatePokemon = (slotIndex, updatedPokemon) => {
+    const newTeam = [...team];
+    newTeam[slotIndex] = updatedPokemon;
     setTeam(newTeam);
   };
 
@@ -45,7 +55,11 @@ function App() {
           {error && <div>Error: {error}</div>}
         </div>
 
-        <TeamGrid team={team} onRemove={removePokemon} />
+        <TeamGrid
+          team={team}
+          onRemove={removePokemon}
+          onUpdatePokemon={updatePokemon}
+        />
 
         {/* Bug Testing */}
         <div className="bg-gray-800">
@@ -71,7 +85,6 @@ function App() {
               team={team}
               onCreateTeam={(createdTeam) => {
                 console.log("Team created:", createdTeam);
-                // Optionally close form or keep it open
               }}
             />
           )}

@@ -24,7 +24,6 @@ export function usePokemonDetails() {
           learnMethods: moveEntry.version_group_details
         }));
 
-        // Extract abilities
         const abilities = pokemonData.abilities.map(abilityEntry => ({
           name: abilityEntry.ability.name,
           isHidden: abilityEntry.is_hidden,

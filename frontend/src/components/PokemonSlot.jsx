@@ -1,6 +1,13 @@
 import TypeIcons from "./TypeIcons";
+import AbilityDropdown from "./AbilityDropdown";
+import NatureDropdown from "./NatureDropdown";
 
-export default function PokemonSlot({ index, pokemon, onRemove }) {
+export default function PokemonSlot({
+  index,
+  pokemon,
+  onRemove,
+  onUpdatePokemon,
+}) {
   const handleRemove = () => {
     if (onRemove) {
       onRemove(index);
@@ -22,6 +29,14 @@ export default function PokemonSlot({ index, pokemon, onRemove }) {
       type: { name: type },
     })) || [];
 
+  const handleAbilityChange = (newAbility) => {
+    onUpdatePokemon?.(index, { ...pokemon, selectedAbility: newAbility });
+  };
+
+  const handleNatureChange = (newNature) => {
+    onUpdatePokemon?.(index, { ...pokemon, selectedNature: newNature });
+  };
+
   return (
     <div className="border-gray-600 bg-grey-800 rounded-2xl">
       <div className="text-center">
@@ -35,6 +50,20 @@ export default function PokemonSlot({ index, pokemon, onRemove }) {
       </div>
       <div className="font-semibold">{pokemon.name}</div>
       <TypeIcons types={formattedTypes} />
+
+      <div>
+        <AbilityDropdown
+          abilities={pokemon.availableAbilities || []}
+          selectedAbility={pokemon.selectedAbility}
+          onAbilityChange={handleAbilityChange}
+        />
+        <NatureDropdown
+          selectedNature={pokemon.selectedNature}
+          onNatureChange={handleNatureChange}
+        />
+      </div>
+
+      <button onClick={handleRemove}>Remove</button>
     </div>
   );
 }
