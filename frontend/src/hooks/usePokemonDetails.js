@@ -18,11 +18,28 @@ export function usePokemonDetails() {
 
         const pokemonData = await response.json();
 
-        const moves = pokemonData.moves.map(moveEntry => ({
-          name: moveEntry.move.name,
-          url: moveEntry.move.url,
-          learnMethods: moveEntry.version_group_details
-        }));
+        const moves = await Promise.all(
+          pokemonData.moves.slice(0, 50).map(async (moveEntry) => {
+          try {
+            const moveResponse = await fetch(moveEntry.move.url);
+            const moveData = await moveResponse.json();
+            return {
+              name: moveEntry.move.name,
+              type: moveData.type?.name,
+              power: moveData.power,
+              pp: moveData.pp,
+              accuracy: moveData.accuracy,
+            };
+            } catch (error) {
+                return {
+                  name: moveEntry.move.name,
+                  type: null,
+                  power: null,
+                  pp: null,
+                  accuracy: null,
+                };
+              }})
+            );
 
         const abilities = pokemonData.abilities.map(abilityEntry => ({
           name: abilityEntry.ability.name,
