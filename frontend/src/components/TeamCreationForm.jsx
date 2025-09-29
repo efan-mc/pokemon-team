@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTeamApi } from "../hooks/useTeamApi";
 
-export default function TeamCreationForm({ team, onCreateTeam }) {
+export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
   const [teamName, setTeamName] = useState("");
   const [format, setFormat] = useState("singles");
   const [createdTeam, setCreatedTeam] = useState(null);
@@ -60,6 +60,7 @@ export default function TeamCreationForm({ team, onCreateTeam }) {
     setCreatedTeam(null);
     setTeamName("");
     setFormat("VGC");
+    onClear?.();
   };
 
   if (createdTeam) {
