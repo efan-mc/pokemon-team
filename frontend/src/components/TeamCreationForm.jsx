@@ -27,6 +27,10 @@ export default function TeamCreationForm({ team, onCreateTeam }) {
         species: mon.name,
         ability: mon.selectedAbility,
         nature: mon.selectedNature,
+        moves:
+          mon.selectedMoves
+            ?.filter((move) => move !== null)
+            .map((move) => move.name) || null,
       }));
 
     return {
