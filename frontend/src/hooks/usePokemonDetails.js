@@ -38,8 +38,9 @@ export function usePokemonDetails() {
                   pp: null,
                   accuracy: null,
                 };
-              }})
-            );
+              }
+            })
+          );
 
         const abilities = pokemonData.abilities.map(abilityEntry => ({
           name: abilityEntry.ability.name,

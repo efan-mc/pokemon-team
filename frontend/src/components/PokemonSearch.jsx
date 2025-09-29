@@ -86,7 +86,7 @@ export default function PokemonSearch({ onSelect, onAdd }) {
               onClick={() => handleSelect(name)}
               className="p-3 hover:bg-gray-700 cursor-pointer capitalize text-white"
             >
-              {name}
+              {capitalize(name)}
             </div>
           ))}
         </div>

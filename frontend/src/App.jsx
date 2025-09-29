@@ -15,7 +15,7 @@ function App() {
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
     if (emptySlot === -1) {
-      alert("Team is full, remoev a Pokemon first");
+      alert("Team is full, remove a Pokemon first");
       return;
     }
 
@@ -29,6 +29,7 @@ function App() {
         availableAbilities: pokemonDetails.abilities,
         selectedAbility: null,
         selectedNature: null,
+        availableMoves: pokemonDetails.moves,
       };
       setTeam(newTeam);
     } catch (error) {
@@ -90,6 +91,7 @@ function App() {
               onCreateTeam={(createdTeam) => {
                 console.log("Team created:", createdTeam);
               }}
+              onClear={() => setTeam(Array(6).fill(null))}
             />
           )}
         </div>
