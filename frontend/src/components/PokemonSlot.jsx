@@ -1,6 +1,8 @@
+import { useState } from "react";
 import TypeIcons from "./TypeIcons";
 import AbilityDropdown from "./AbilityDropdown";
 import NatureDropdown from "./NatureDropdown";
+import MoveDropdown from "./MoveDropdown";
 
 export default function PokemonSlot({
   index,
@@ -8,6 +10,8 @@ export default function PokemonSlot({
   onRemove,
   onUpdatePokemon,
 }) {
+  const [selectedMoves, setSelectedMoves] = useState([null, null, null, null]);
+
   const handleRemove = () => {
     if (onRemove) {
       onRemove(index);
@@ -28,6 +32,17 @@ export default function PokemonSlot({
     pokemon.types?.map((type) => ({
       type: { name: type },
     })) || [];
+
+  const handleMoveSelect = (moveIndex, move) => {
+    const newMoves = [...selectedMoves];
+    newMoves[moveIndex] = move;
+    setSelectedMoves(newMoves);
+
+    onUpdatePokemon(index, {
+      ...pokemon,
+      selectedMoves: newMoves,
+    });
+  };
 
   const handleAbilityChange = (newAbility) => {
     onUpdatePokemon?.(index, { ...pokemon, selectedAbility: newAbility });
@@ -61,6 +76,19 @@ export default function PokemonSlot({
           selectedNature={pokemon.selectedNature}
           onNatureChange={handleNatureChange}
         />
+      </div>
+
+      <div>
+        {[0, 1, 2, 3].map((moveIndex) => {
+          return (
+            <MoveDropdown
+              key={moveIndex}
+              moves={pokemon.availableMoves || []}
+              selectedMove={selectedMoves[moveIndex]}
+              onSelect={(move) => handleMoveSelect(moveIndex, move)}
+            />
+          );
+        })}
       </div>
 
       <button onClick={handleRemove}>Remove</button>
