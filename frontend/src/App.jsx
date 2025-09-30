@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { usePokemonApi } from "./hooks/usePokemonApi";
 import { usePokemonDetails } from "./hooks/usePokemonDetails";
+import { useAnalysisApi } from "./hooks/useAnalysisApi";
 import "./App.css";
 import TeamGrid from "./components/TeamGrid";
 import PokemonSearch from "./components/PokemonSearch";
 import TeamCreationForm from "./components/TeamCreationForm";
+import TypeChart from "./components/TypeChart";
 
 function App() {
   const [team, setTeam] = useState(Array(6).fill(null));
   const { validatePokemon, isLoading, error } = usePokemonApi();
   const { fetchPokemonDetails } = usePokemonDetails();
   const [showTeamForm, setShowTeamForm] = useState(false);
+  const {
+    analyseTeam,
+    isLoading: analysisLoading,
+    error: analysisError,
+  } = useAnalysisApi();
+  const [analysisData, setAnalysisData] = useState(null);
 
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
@@ -34,6 +42,22 @@ function App() {
       setTeam(newTeam);
     } catch (error) {
       alert(`Failed to add Pokemon: ${error.message}`);
+    }
+  };
+
+  const handleAnalyse = async () => {
+    const formattedTeam = team
+      .filter((pokemon) => pokemon !== null)
+      .map((pokemon) => ({
+        name: pokemon.name,
+        types: pokemon.types,
+      }));
+
+    try {
+      const result = await analyseTeam(formattedTeam);
+      setAnalysisData(result);
+    } catch (error) {
+      console.log("Analysis failed: ", error);
     }
   };
 
@@ -85,6 +109,12 @@ function App() {
         </div>
 
         <div>
+          <button onClick={handleAnalyse}>Analyse Team</button>
+          {analysisLoading && <div>Analysing team...</div>}
+          {analysisError && <div>Error: {analysisError}</div>}
+        </div>
+
+        <div>
           {showTeamForm && (
             <TeamCreationForm
               team={team}
@@ -94,6 +124,10 @@ function App() {
               onClear={() => setTeam(Array(6).fill(null))}
             />
           )}
+        </div>
+
+        <div>
+          <TypeChart team={team} analysisData={analysisData} />
         </div>
       </div>
     </div>
