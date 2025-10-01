@@ -7,6 +7,7 @@ import TeamGrid from "./components/TeamGrid";
 import PokemonSearch from "./components/PokemonSearch";
 import TeamCreationForm from "./components/TeamCreationForm";
 import TypeChart from "./components/TypeChart";
+import { apiCall } from "./utils/api";
 
 function App() {
   const [team, setTeam] = useState(Array(6).fill(null));
@@ -19,6 +20,8 @@ function App() {
     error: analysisError,
   } = useAnalysisApi();
   const [analysisData, setAnalysisData] = useState(null);
+  const [showImportBox, setShowImportBox] = useState(false);
+  const [importText, setImportText] = useState("");
 
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
@@ -61,6 +64,44 @@ function App() {
     }
   };
 
+  const handleImportShowdown = async () => {
+    if (!importText.trim()) {
+      alert("Please paste Showdown text");
+      return;
+    }
+
+    try {
+      const { parsed } = await apiCall("/test-parser", {
+        method: "POST",
+        body: { showdownText: importText },
+      });
+
+      const importedTeam = await Promise.all(
+        parsed.map(async (mon) => {
+          const pokemonData = await validatePokemon(mon.species);
+          const pokemonDetails = await fetchPokemonDetails(mon.species);
+
+          return {
+            ...pokemonData,
+            availableAbilities: pokemonDetails.abilities,
+            selectedAbility: mon.ability || null,
+            selectedNature: mon.nature || null,
+            availableMoves: pokemonDetails.moves,
+            selectedMoves: mon.moves
+              ? mon.moves.map((m) => ({ name: m }))
+              : [null, null, null, null],
+          };
+        })
+      );
+
+      setTeam([...importedTeam, ...Array(6 - importedTeam.length).fill(null)]);
+      setImportText("");
+      setShowImportBox(false);
+    } catch (error) {
+      alert(`Import failed: ${error.message}`);
+    }
+  };
+
   const removePokemon = (slotIndex) => {
     const newTeam = [...team];
     newTeam[slotIndex] = null;
@@ -83,6 +124,25 @@ function App() {
           {isLoading && <div>Adding Pokemon to team...</div>}
           {error && <div>Error: {error}</div>}
         </div>
+
+        <div>
+          <button onClick={() => setShowImportBox(!showImportBox)}>
+            Show Import
+          </button>
+        </div>
+
+        {showImportBox && (
+          <div>
+            <textarea
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              placeholder="Paste your Showdown team here..."
+              rows={15}
+              cols={60}
+            />
+            <button onClick={handleImportShowdown}>Import Team</button>
+          </div>
+        )}
 
         <TeamGrid
           team={team}
