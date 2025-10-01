@@ -78,8 +78,14 @@ function App() {
 
       const importedTeam = await Promise.all(
         parsed.map(async (mon) => {
-          const pokemonData = await validatePokemon(mon.species);
-          const pokemonDetails = await fetchPokemonDetails(mon.species);
+          const parseForFront = mon.species
+            .toLowerCase()
+            .trim()
+            .split(" ")
+            .join("-");
+
+          const pokemonData = await validatePokemon(parseForFront);
+          const pokemonDetails = await fetchPokemonDetails(parseForFront);
 
           return {
             ...pokemonData,
