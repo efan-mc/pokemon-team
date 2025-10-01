@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TypeIcons from "./TypeIcons";
 import AbilityDropdown from "./AbilityDropdown";
 import NatureDropdown from "./NatureDropdown";
@@ -11,6 +11,12 @@ export default function PokemonSlot({
   onUpdatePokemon,
 }) {
   const [selectedMoves, setSelectedMoves] = useState([null, null, null, null]);
+
+  useEffect(() => {
+    if (pokemon?.selectedMoves) {
+      setSelectedMoves(pokemon.selectedMoves);
+    }
+  }, [pokemon]);
 
   const handleRemove = () => {
     if (onRemove) {
