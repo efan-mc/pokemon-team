@@ -78,24 +78,34 @@ function App() {
 
       const importedTeam = await Promise.all(
         parsed.map(async (mon) => {
-          const parseForFront = mon.species
-            .toLowerCase()
-            .trim()
-            .split(" ")
-            .join("-");
+          const formatName = (name) =>
+            name.toLowerCase().trim().split(" ").join("-");
 
-          const pokemonData = await validatePokemon(parseForFront);
-          const pokemonDetails = await fetchPokemonDetails(parseForFront);
+          const parseNameFront = formatName(mon.species);
+
+          const pokemonData = await validatePokemon(parseNameFront);
+          const pokemonDetails = await fetchPokemonDetails(parseNameFront);
+
+          const selectedMoves = [null, null, null, null];
+          if (mon.moves) {
+            mon.moves.forEach((moveName, index) => {
+              const formattedMove = formatName(moveName);
+              const matchingMove = pokemonDetails.moves.find(
+                (m) => m.name === formattedMove
+              );
+              if (matchingMove) {
+                selectedMoves[index] = matchingMove;
+              }
+            });
+          }
 
           return {
             ...pokemonData,
             availableAbilities: pokemonDetails.abilities,
-            selectedAbility: mon.ability || null,
-            selectedNature: mon.nature || null,
+            selectedAbility: formatName(mon.ability) || null,
+            selectedNature: formatName(mon.nature) || null,
             availableMoves: pokemonDetails.moves,
-            selectedMoves: mon.moves
-              ? mon.moves.map((m) => ({ name: m }))
-              : [null, null, null, null],
+            selectedMoves: selectedMoves,
           };
         })
       );
