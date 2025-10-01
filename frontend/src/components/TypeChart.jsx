@@ -54,8 +54,9 @@ export default function TypeChart({ team, analysisData }) {
   const calculateSummary = (typeRow) => {
     const validValues = typeRow.filter((val) => val !== null);
     const weakCount = validValues.filter((val) => val > 1).length;
-    const resistCount = validValues.filter((val) => val > 0 && val < 1).length;
-    return { weakCount, resistCount };
+    const resistCount = validValues.filter((val) => val < 1).length;
+    const totalCoverage = Math.abs(weakCount - resistCount);
+    return { weakCount, resistCount, totalCoverage };
   };
 
   const getCellColor = (value) => {
@@ -110,6 +111,9 @@ export default function TypeChart({ team, analysisData }) {
             ))}
             <th className="border border-gray-600 p-2 bg-gray-800">Weak.</th>
             <th className="border border-gray-600 p-2 bg-gray-800">Resist.</th>
+            <th className="border border-gray-600 p-2 bg-gray-800">
+              Total Coverage
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -145,6 +149,12 @@ export default function TypeChart({ team, analysisData }) {
   bg-gray-700"
                 >
                   {summary.resistCount}
+                </td>
+                <td
+                  className="border border-gray-600 p-2 text-center
+  bg-gray-700"
+                >
+                  {summary.totalCoverage}
                 </td>
               </tr>
             );
