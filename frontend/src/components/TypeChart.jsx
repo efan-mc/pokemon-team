@@ -81,6 +81,12 @@ export default function TypeChart({ team, analysisData }) {
     return value;
   };
 
+  const getCoverageCellColour = (weakCount, resistCount) => {
+    if (weakCount > resistCount) return "bg-red-600";
+    if (resistCount > weakCount) return "bg-green-600";
+    return "bg-gray-600";
+  };
+
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
@@ -151,8 +157,10 @@ export default function TypeChart({ team, analysisData }) {
                   {summary.resistCount}
                 </td>
                 <td
-                  className="border border-gray-600 p-2 text-center
-  bg-gray-700"
+                  className={`border border-gray-600 p-2 text-center ${getCoverageCellColour(
+                    summary.weakCount,
+                    summary.resistCount
+                  )}`}
                 >
                   {summary.totalCoverage}
                 </td>
