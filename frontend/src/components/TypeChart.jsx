@@ -84,7 +84,7 @@ export default function TypeChart({ team, analysisData }) {
   const getCoverageCellColour = (weakCount, resistCount) => {
     if (weakCount > resistCount) return "bg-red-600";
     if (resistCount > weakCount) return "bg-green-600";
-    return "bg-gray-600";
+    return "bg-gray-700";
   };
 
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
