@@ -12,7 +12,7 @@ export function useTeamImport() {
         try {
               const result = await apiCall('/teams/import', {
                   method: 'POST',
-                  body: { showdownText, teamName, format }
+                  body: { showdownText, name: teamName, format }
               });
               return result.data;
           } catch (err) {
