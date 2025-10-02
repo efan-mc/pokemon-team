@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePokemonApi } from "./hooks/usePokemonApi";
 import { usePokemonDetails } from "./hooks/usePokemonDetails";
 import { useAnalysisApi } from "./hooks/useAnalysisApi";
@@ -12,7 +12,10 @@ import TeamCreationForm from "./components/TeamCreationForm";
 import TypeChart from "./components/TypeChart";
 
 function App() {
-  const [team, setTeam] = useState(Array(6).fill(null));
+  const [team, setTeam] = useState(() => {
+    const saved = localStorage.getItem("tempTeam");
+    return saved ? JSON.parse(saved) : Array(6).fill(null);
+  });
   const { validatePokemon, isLoading, error } = usePokemonApi();
   const { fetchPokemonDetails } = usePokemonDetails();
   const [showTeamForm, setShowTeamForm] = useState(false);
@@ -24,9 +27,13 @@ function App() {
   const [analysisData, setAnalysisData] = useState(null);
   const [showImportBox, setShowImportBox] = useState(false);
   const [importText, setImportText] = useState("");
-  const { loadTeamBySlug } = useTeamLoader();
   const [teamSlug, setTeamSlug] = useState("");
+  const { loadTeamBySlug } = useTeamLoader();
   const { importFromShowdown } = useTeamImport();
+
+  useEffect(() => {
+    localStorage.setItem("tempTeam", JSON.stringify(team));
+  }, [team]);
 
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
@@ -260,6 +267,7 @@ function App() {
               team={team}
               onCreateTeam={(createdTeam) => {
                 console.log("Team created:", createdTeam);
+                localStorage.removeItem("tempTeam");
               }}
               onClear={() => setTeam(Array(6).fill(null))}
             />
