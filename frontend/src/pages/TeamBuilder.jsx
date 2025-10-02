@@ -27,6 +27,7 @@ function TeamBuilder() {
   const [showImportBox, setShowImportBox] = useState(false);
   const [importText, setImportText] = useState("");
   const [teamSlug, setTeamSlug] = useState("");
+  const [savedTeamSlug, setSavedTeamSlug] = useState(null);
   const { loadTeamBySlug } = useTeamLoader();
   const { importFromShowdown } = useTeamImport();
 
@@ -266,12 +267,28 @@ function TeamBuilder() {
               team={team}
               onCreateTeam={(createdTeam) => {
                 console.log("Team created:", createdTeam);
+                setSavedTeamSlug(createdTeam.slug);
                 localStorage.removeItem("tempTeam");
               }}
               onClear={() => setTeam(Array(6).fill(null))}
             />
           )}
         </div>
+
+        {savedTeamSlug && (
+          <div>
+            Team saved! Share code: {savedTeamSlug}
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `http://localhost:5173/t/${savedTeamSlug}`
+                );
+              }}
+            >
+              Copy Link
+            </button>
+          </div>
+        )}
 
         <div>
           <TypeChart team={team} analysisData={analysisData} />
