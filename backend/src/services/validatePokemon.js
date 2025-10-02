@@ -11,7 +11,7 @@ export async function validateSpecies(species) {
         return { valid: false, error: 'species name required' }
     };
 
-    const cleanSpecies = species.toLowerCase().trim();
+    const cleanSpecies = species.toLowerCase().trim().split(" ").join("-");
 
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${cleanSpecies}`);
