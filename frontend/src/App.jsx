@@ -4,6 +4,7 @@ import { usePokemonDetails } from "./hooks/usePokemonDetails";
 import { useAnalysisApi } from "./hooks/useAnalysisApi";
 import { apiCall } from "./utils/api";
 import { useTeamLoader } from "./hooks/useTeamLoader";
+import { useTeamImport } from "./hooks/useTeamImport";
 import "./App.css";
 import TeamGrid from "./components/TeamGrid";
 import PokemonSearch from "./components/PokemonSearch";
@@ -25,6 +26,7 @@ function App() {
   const [importText, setImportText] = useState("");
   const { loadTeamBySlug } = useTeamLoader();
   const [teamSlug, setTeamSlug] = useState("");
+  const { importFromShowdown } = useTeamImport();
 
   const addPokemonToTeam = async (pokemonName) => {
     const emptySlot = team.findIndex((slot) => slot == null);
@@ -74,13 +76,14 @@ function App() {
     }
 
     try {
-      const { parsed } = await apiCall("/test-parser", {
-        method: "POST",
-        body: { showdownText: importText },
-      });
+      const teamData = await importFromShowdown(
+        importText,
+        "Imported Team",
+        "OU"
+      );
 
       const importedTeam = await Promise.all(
-        parsed.map(async (mon) => {
+        teamData.members.map(async (mon) => {
           const formatName = (name) =>
             name.toLowerCase().trim().split(" ").join("-");
 
