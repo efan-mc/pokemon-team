@@ -3,6 +3,7 @@ import TypeIcons from "./TypeIcons";
 import AbilityDropdown from "./AbilityDropdown";
 import NatureDropdown from "./NatureDropdown";
 import MoveDropdown from "./MoveDropdown";
+import { TYPE_COLOURS } from "../utils/pokemonTypeColours";
 
 export default function PokemonSlot({
   index,
@@ -61,8 +62,31 @@ export default function PokemonSlot({
     onUpdatePokemon?.(index, { ...pokemon, selectedNature: newNature });
   };
 
+  const getCardBackground = () => {
+    if (!pokemon.types || pokemon.types.length === 0) {
+      return { background: "#9FA19F" };
+    }
+
+    const t1 = pokemon.types[0]?.toLowerCase() || "normal";
+    const t2 = pokemon.types[1]?.toLowerCase() || t1;
+
+    const c1 = TYPE_COLOURS[t1] || "#9FA19F";
+    const c2 = TYPE_COLOURS[t2] || c1;
+
+    const isDual = t1 !== t2;
+
+    const bg = isDual
+      ? `linear-gradient(135deg, ${c1} 40%, ${c2} 60%)`
+      : `linear-gradient(135deg, ${c1} 0%, ${c1} 100%)`;
+
+    return { background: bg };
+  };
+
   return (
-    <div className="relative bg-gray-800 border border-gray-700 rounded-2xl p-4 hover:border-gray-400 ">
+    <div
+      className="relative bg-gray-800 border border-gray-700 rounded-2xl p-4 hover:border-gray-400"
+      style={getCardBackground()}
+    >
       <button
         onClick={handleRemove}
         className="absolute top-3 left-3 w-7 h-7 flex items-center justify-center
