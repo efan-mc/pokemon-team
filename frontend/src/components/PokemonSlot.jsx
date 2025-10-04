@@ -90,7 +90,7 @@ export default function PokemonSlot({
       <button
         onClick={handleRemove}
         className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center
-  text-red-400 rounded z-10 font-bold"
+  text-red-400 rounded z-10 font-bold bg-gray-900/50 hover:cursor-pointer"
       >
         X
       </button>
@@ -131,7 +131,7 @@ export default function PokemonSlot({
         </div>
       </div>
 
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 hover:cursor-pointer">
         {[0, 1, 2, 3].map((moveIndex) => {
           return (
             <MoveDropdown

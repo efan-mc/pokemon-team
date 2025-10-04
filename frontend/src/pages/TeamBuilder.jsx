@@ -192,44 +192,78 @@ function TeamBuilder() {
   };
 
   return (
-    <div>
-      <div>
-        <h1>Place Holder Title</h1>
+    <div className="min-h-screen bg-gray-800 text-gray-100 p-6">
+      <div className="max-w-7xl justify-between">
+        <h1 className="text-4xl font-bold mb-6">Pokémon Team Builder</h1>
 
-        <div>
-          <PokemonSearch onAdd={addPokemonToTeam} />
-          {isLoading && <div>Adding Pokemon to team...</div>}
-          {error && <div>Error: {error}</div>}
-        </div>
+        {/* Action Button */}
+        <div className="flex gap-3 mb-8 justify-center">
+          <button
+            onClick={() => setShowImportBox(!showImportBox)}
+            className="px-4 py-2 rounded font-medium bg-blue-600 hover:bg-blue-500 transition-colors"
+          >
+            Import
+          </button>
 
-        <div>
-          <button onClick={() => setShowImportBox(!showImportBox)}>
-            Show Import
+          <button
+            onClick={() => setShowTeamForm(true)}
+            className="px-4 py-2 rounded font-medium bg-blue-600 hover:bg-blue-500 transition-colors"
+          >
+            Save Team
           </button>
         </div>
 
-        <div>
-          <input
-            type="text"
-            value={teamSlug}
-            onChange={(e) => setTeamSlug(e.target.value)}
-            placeholder="Enter a team code"
-          />
-          <button onClick={handleLoadTeam}>Load Team</button>
-        </div>
+        {/* Import Button */}
 
         {showImportBox && (
-          <div>
+          <div className="mb-8">
             <textarea
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
               placeholder="Paste your Showdown team here..."
               rows={15}
-              cols={60}
+              className="w-full p-3 bg-gray-900 border border-gray-700 rounded-2xl"
             />
-            <button onClick={handleImportShowdown}>Import Team</button>
+            <button
+              onClick={handleImportShowdown}
+              className="px-4 py-2 rounded font-medium bg-blue-600 hover:bg-blue-500 transition-colors"
+            >
+              Import Team
+            </button>
           </div>
         )}
+
+        {/* Pokemon Search */}
+
+        <div className="mb-6">
+          <PokemonSearch onAdd={addPokemonToTeam} />
+          {isLoading && (
+            <div className="text-yellow-200">Adding Pokemon to team...</div>
+          )}
+          {error && <div className="text-red-500">Error: {error}</div>}
+        </div>
+
+        {/* Load Team */}
+
+        <div className="mb-8">
+          <input
+            type="text"
+            value={teamSlug}
+            onChange={(e) => setTeamSlug(e.target.value)}
+            placeholder="Enter a team code"
+            className="flex-1 max-w-sm px-3 py-2 bg-gray-800 border border-gray-700 
+            rounded-2xl"
+          />
+          <button
+            onClick={handleLoadTeam}
+            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded font-medium
+  transition-colors"
+          >
+            Load Team
+          </button>
+        </div>
+
+        {/* Team Grid */}
 
         <TeamGrid
           team={team}
@@ -237,31 +271,23 @@ function TeamBuilder() {
           onUpdatePokemon={updatePokemon}
         />
 
-        {/* Bug Testing */}
-        <div className="bg-gray-800">
-          <h3>Current Team:</h3>
-          {team.map((pokemon, index) => (
-            <div key={index}>
-              Slot {index + 1}:{" "}
-              {pokemon
-                ? `${pokemon.name}
-                  (${pokemon.types.join("/")})`
-                : "Empty"}
-            </div>
-          ))}
-        </div>
+        {/* Analysis */}
 
-        <div>
-          <button onClick={() => setShowTeamForm(true)}>Save Team</button>
-        </div>
-
-        <div>
-          <button onClick={handleAnalyse}>Analyse Team</button>
+        <div className="mb-8">
+          <button
+            onClick={handleAnalyse}
+            className="px-6 py-3 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg font-semibold
+  transition-colors"
+          >
+            Analyse Team
+          </button>
           {analysisLoading && <div>Analysing team...</div>}
           {analysisError && <div>Error: {analysisError}</div>}
         </div>
 
-        <div>
+        {/* Team Creation Confirm */}
+
+        <div className="mb-8">
           {showTeamForm && (
             <TeamCreationForm
               team={team}
@@ -271,12 +297,14 @@ function TeamBuilder() {
                 localStorage.removeItem("tempTeam");
               }}
               onClear={() => setTeam(Array(6).fill(null))}
+              className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium
+  transition-colors"
             />
           )}
         </div>
 
         {savedTeamSlug && (
-          <div>
+          <div className="mb-6 p-4 bg-green/30 border border-green-700 rounded-2xl items-center justify-between">
             Team saved! Share code: {savedTeamSlug}
             <button
               onClick={() => {
@@ -284,13 +312,17 @@ function TeamBuilder() {
                   `http://localhost:5173/t/${savedTeamSlug}`
                 );
               }}
+              className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium
+  transition-colors"
             >
               Copy Link
             </button>
           </div>
         )}
 
-        <div>
+        {/* Type Chart */}
+
+        <div className="mt-8">
           <TypeChart team={team} analysisData={analysisData} />
         </div>
       </div>
