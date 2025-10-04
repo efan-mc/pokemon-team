@@ -89,37 +89,49 @@ export default function PokemonSlot({
     >
       <button
         onClick={handleRemove}
-        className="absolute top-3 left-3 w-7 h-7 flex items-center justify-center
+        className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center
   text-red-400 rounded z-10 font-bold"
       >
         X
       </button>
 
-      <div className="text-center">
+      <div className="flex gap-4 mt-6 items-center">
         {pokemon.sprites && (
-          <img
-            src={pokemon.sprites}
-            alt={pokemon.name}
-            className="w-24 h-24 mx-auto"
-          />
+          <div
+            className="w-24 h-24 rounded-full bg-gray-900/50 border border-gray-700 flex
+  items-center justify-center"
+          >
+            <img
+              src={pokemon.sprites}
+              alt={pokemon.name}
+              className="w-24 h-24 object-contain"
+            />
+          </div>
         )}
-      </div>
-      <div className="font-semibold">{pokemon.name}</div>
-      <TypeIcons types={formattedTypes} />
-
-      <div>
-        <AbilityDropdown
-          abilities={pokemon.availableAbilities || []}
-          selectedAbility={pokemon.selectedAbility}
-          onAbilityChange={handleAbilityChange}
-        />
-        <NatureDropdown
-          selectedNature={pokemon.selectedNature}
-          onNatureChange={handleNatureChange}
-        />
+        <div className="bg-gray-900/50 border border-gray-700 px-4 py-2 flex rounded text-center">
+          <span className="font-semibold capitalize">{pokemon.name}</span>
+        </div>
       </div>
 
-      <div>
+      <div className="absolute top-2 right-2 flex gap-1.5">
+        <TypeIcons types={formattedTypes} size="small" />
+      </div>
+
+      <div className="flex gap-3 mt-2">
+        <div className="flex-1 flex flex-col gap-1.5">
+          <AbilityDropdown
+            abilities={pokemon.availableAbilities || []}
+            selectedAbility={pokemon.selectedAbility}
+            onAbilityChange={handleAbilityChange}
+          />
+          <NatureDropdown
+            selectedNature={pokemon.selectedNature}
+            onNatureChange={handleNatureChange}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2">
         {[0, 1, 2, 3].map((moveIndex) => {
           return (
             <MoveDropdown
@@ -131,8 +143,6 @@ export default function PokemonSlot({
           );
         })}
       </div>
-
-      <button onClick={handleRemove}>Remove</button>
     </div>
   );
 }
