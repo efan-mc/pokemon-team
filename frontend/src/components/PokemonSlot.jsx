@@ -26,9 +26,12 @@ export default function PokemonSlot({
 
   if (!pokemon) {
     return (
-      <div className="border-gray-600 rounded-2xl">
+      <div
+        className="border-2 border-dashed border-gray-600 bg-gray-800/30 rounded-2xl p-6
+  flex items-center justify-center min-h-[280px] min-w-[280px]"
+      >
         <div>
-          <div>Empty Slot</div>
+          <div className="text-gray-400">Empty Slot</div>
         </div>
       </div>
     );
@@ -59,7 +62,15 @@ export default function PokemonSlot({
   };
 
   return (
-    <div className="border-gray-600 bg-grey-800 rounded-2xl">
+    <div className="relative bg-gray-800 border border-gray-700 rounded-2xl p-4 hover:border-gray-400 ">
+      <button
+        onClick={handleRemove}
+        className="absolute top-3 left-3 w-7 h-7 flex items-center justify-center
+  text-red-400 rounded z-10 font-bold"
+      >
+        X
+      </button>
+
       <div className="text-center">
         {pokemon.sprites && (
           <img
