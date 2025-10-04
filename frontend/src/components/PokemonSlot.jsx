@@ -77,7 +77,7 @@ export default function PokemonSlot({
 
     const bg = isDual
       ? `linear-gradient(135deg, ${c1} 40%, ${c2} 60%)`
-      : `linear-gradient(135deg, ${c1} 0%, ${c1} 100%)`;
+      : `linear-gradient(135deg, ${c1} 0%, ${c1}cc 50%, ${c1}80 100%)`;
 
     return { background: bg };
   };
