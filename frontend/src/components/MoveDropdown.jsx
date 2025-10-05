@@ -39,23 +39,21 @@ export default function MoveDropdown({
     onSelect?.(move);
   };
 
-  const handleInputChange = (e) => {
-    setSearchText(e.target.value);
-    setShowResults(e.target.value.trim().length > 0);
-  };
-
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+    if (!showResults || filteredMoves.length === 0) return;
 
-      if (filteredMoves.length > 0) {
-        setSearchText(capitalize(filteredMoves[0].name));
-        setShowResults(false);
-        onSelect?.(filteredMoves[0]);
-      } else if (searchText.trim()) {
-        onAdd?.(searchText.trim());
-        setSearchText("");
-        setShowResults(false);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < filteredMoves.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredMoves[highlightedIndex]) {
+        handleSelect(filteredMoves[highlightedIndex]);
       }
     } else if (e.key === "Escape") {
       setShowResults(false);
@@ -64,19 +62,32 @@ export default function MoveDropdown({
   };
 
   return (
-    <div>
+    <div className="relative">
       <input
         type="text"
         value={searchText}
-        onChange={handleInputChange}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+          setShowResults(e.target.value.trim().length > 0);
+        }}
         onKeyDown={handleKeyDown}
         onFocus={() => setShowResults(searchText.trim().length > 0)}
         placeholder={selectedMove ? capitalize(selectedMove.name) : "Move"}
+        className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700 rounded-2xl capitalize
+        text-sm font-semibold placeholder:text-gray-200 hover:border-gray-500 transition-colors cursor-text"
       />
       {showResults && filteredMoves.length > 0 && (
-        <div>
+        <div
+          className="absolute z-20 w-full bg-gray-800/80 border border-gray-700 rounded
+ max-h-40 capitalize overflow-y-auto"
+        >
           {filteredMoves.map((move, index) => (
-            <div key={move.name || index} onClick={() => handleSelect(move)}>
+            <div
+              key={move.name || index}
+              onClick={() => handleSelect(move)}
+              className="w-full px-2 py-1.5 capitalize cursor-pointer hover:bg-gray-700
+  text-gray-100 text-xs"
+            >
               {capitalize(move.name)}
             </div>
           ))}
