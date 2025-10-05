@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
+* {
+  scrollbar-width: thin;
+}
+
 body {
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1e2939;
+  background-color: #1a202c;
+  min-height: 100vh;
   color: #e5e7eb;
 }
 
