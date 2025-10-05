@@ -14,7 +14,7 @@ Live Site: [Pokemon Team Builder](https://pokemon-team-puce.vercel.app)
 
 ## ✨ Features
 
-- **Team Building**: Create Pokemon teams with full movesets, EVs, IVs, and items
+- **Team Building**: Create Pokemon teams with full movesets, nature's and abilities
 - **Showdown Import**: Import teams directly from Pokemon Showdown format
 - **Shareable URLs**: Generate unique links to share your teams
 - **Type Coverage Analysis**: View offensive and defensive type coverage for your team
