@@ -9,9 +9,14 @@ function parseFirstLine(line, pokemon) {
     if (namepart.includes('(') && namepart.includes(')')) {
         const openBra = namepart.indexOf('(');
         const closedBra = namepart.indexOf(')');
+        const extracted = namepart.substring(openBra + 1, closedBra).trim();
 
-        pokemon.nickname = namepart.substring(0, openBra).trim();
-        pokemon.species = namepart.substring(openBra + 1, closedBra).trim();
+        if (extracted === 'M' || extracted === 'F') {
+          pokemon.species = namepart.substring(0, openBra).trim();
+      } else {
+          pokemon.nickname = namepart.substring(0, openBra).trim();
+          pokemon.species = extracted;
+      }
     } else {
         pokemon.species = namepart;
     }

@@ -65,34 +65,40 @@ export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
 
   if (createdTeam) {
     return (
-      <div>
-        <div className="text-center">
+      <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 max-w-md mx-auto">
+        <div className="text-2xl font-semibold mb-4">
           <h2>Team Created</h2>
         </div>
 
-        <div>
-          <div>
+        <div className="space-y-3">
+          <div className="bg-gray-900/50 p-3 rounded-lg">
             <span>Team Name:</span> {createdTeam.name}
           </div>
-          <div>
+          <div className="capitalize bg-gray-900/50 p-3 rounded-lg">
             <span>Format:</span> {createdTeam.format}
           </div>
-          <div>
+          <div className="bg-gray-900/50 p-3 rounded-lg">
             <span>Team Code:</span>
             <div>{createdTeam.slug}</div>
           </div>
         </div>
 
-        <button onClick={handleCreateAnother}>Create Another Team</button>
+        <button
+          onClick={handleCreateAnother}
+          className="w-full px-4 py-2 mt-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium
+  transition-colors"
+        >
+          Create Another Team
+        </button>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>Save Current Team</h2>
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Save Current Team</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="teamName">Team Name</label>
           <input
@@ -102,6 +108,7 @@ export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
             onChange={(e) => setTeamName(e.target.value)}
             maxLength={50}
             required
+            className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700 rounded-2xl"
           />
         </div>
 
@@ -111,18 +118,23 @@ export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
             id="format"
             value={format}
             onChange={(e) => setFormat(e.target.value)}
+            className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700 rounded-2xl"
           >
-            {formats.map((f) => {
+            {formats.map((f) => (
               <option key={f.value} value={f.value}>
                 {f.label}
-              </option>;
-            })}
+              </option>
+            ))}
           </select>
         </div>
 
         {error && <div className="text-red-500">Error: {error}</div>}
 
-        <button type="submit" disabled={isLoading}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-2xl"
+        >
           {isLoading ? "Creating Team..." : "Save Team"}
         </button>
       </form>

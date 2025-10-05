@@ -1,7 +1,5 @@
 .icon {
   border-radius: 100%;
-  height: 75px;
-  width: 75px;
   margin: auto;
   transition: 200ms all;
 }
@@ -10,12 +8,6 @@
   filter: saturate(200%);
   transform: scale(1.1);
   cursor: pointer;
-}
-
-.icon img {
-  height: 60%;
-  width: 60%;
-  margin: 20%;
 }
 
 .bug {

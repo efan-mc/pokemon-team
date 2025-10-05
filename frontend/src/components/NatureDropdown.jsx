@@ -35,7 +35,8 @@ export default function NatureDropdown({
     <select
       value={selectedNature || ""}
       onChange={(e) => onNatureChange(e.target.value || null)}
-      className="font-semibold bg-gray-700"
+      className="font-semibold w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-2xl capitalize 
+      text-sm hover:border-gray-500 transition-colors cursor-pointer"
     >
       <option value="">{placeholder}</option>
       {natures.map((nature) => (
