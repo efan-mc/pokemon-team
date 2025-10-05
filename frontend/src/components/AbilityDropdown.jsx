@@ -10,7 +10,8 @@ export default function AbilityDropdown({
       value={selectedAbility || ""}
       onChange={(e) => onAbilityChange(e.target.value || null)}
       disabled={disabled || abilities.length === 0}
-      className="font-semibold bg-gray-700"
+      className="font-semibold w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-2xl capitalize 
+      text-sm hover:border-gray-500 transition-colors cursor-pointer text-gray-200"
     >
       <option value="">{placeholder}</option>
       {abilities.map((ability) => (

@@ -84,18 +84,18 @@ export default function PokemonSlot({
 
   return (
     <div
-      className="relative bg-gray-800 border border-gray-700 rounded-2xl p-4 hover:border-gray-400"
+      className="relative bg-gray-800 border border-gray-700 rounded-2xl p-4 hover:border-gray-400 transition-colors"
       style={getCardBackground()}
     >
       <button
         onClick={handleRemove}
-        className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center
-  text-red-400 rounded z-10 font-bold bg-gray-900/50 hover:cursor-pointer"
+        className="absolute border border-gray-700 top-2 left-2 w-7 h-7 flex items-center justify-center
+  text-red-400 rounded z-10 font-bold bg-gray-900/50 hover:cursor-pointer hover:border-gray-300 transition-colors"
       >
         X
       </button>
 
-      <div className="flex gap-4 mt-6 items-center">
+      <div className="flex gap-3 mt-4 items-center">
         {pokemon.sprites && (
           <div
             className="w-24 h-24 rounded-full bg-gray-900/50 border border-gray-700 flex
@@ -117,7 +117,7 @@ export default function PokemonSlot({
         <TypeIcons types={formattedTypes} size="small" />
       </div>
 
-      <div className="flex gap-3 mt-2">
+      <div className="flex gap-2 mt-3">
         <div className="flex-1 flex flex-col gap-1.5">
           <AbilityDropdown
             abilities={pokemon.availableAbilities || []}
@@ -131,7 +131,7 @@ export default function PokemonSlot({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 hover:cursor-pointer">
+      <div className="grid grid-cols-2 gap-2 mt-2 hover:cursor-pointer">
         {[0, 1, 2, 3].map((moveIndex) => {
           return (
             <MoveDropdown
