@@ -7,6 +7,7 @@ import "../App.css";
 import TeamGrid from "../components/TeamGrid";
 import TypeChart from "../components/TypeChart";
 import { useParams } from "react-router-dom";
+import Footer from "../components/Footer";
 
 function TeamView() {
   const { slug } = useParams();
@@ -56,8 +57,10 @@ function TeamView() {
             return {
               ...pokemonData,
               availableAbilities: pokemonDetails.abilities,
-              selectedAbility: formatName(member.ability) || null,
-              selectedNature: formatName(member.nature) || null,
+              selectedAbility: member.ability
+                ? formatName(member.ability)
+                : null,
+              selectedNature: member.nature ? formatName(member.nature) : null,
               availableMoves: pokemonDetails.moves,
               selectedMoves: selectedMoves,
             };
@@ -91,10 +94,10 @@ function TeamView() {
   }
 
   return (
-    <div>
-      <div className="p-4">
+    <div className="min-h-screen flex flex-col">
+      <div className="p-6 flex-1">
         <h1 className="text-3xl font-bold mb-4">{teamName || "Shared Team"}</h1>
-        <p>Team Code: {slug}</p>
+        <p className="mb-6">Team Code: {slug}</p>
 
         <TeamGrid team={team} onRemove={null} onUpdatePokemon={null} />
 
@@ -102,6 +105,7 @@ function TeamView() {
           <TypeChart team={team} analysisData={analysisData} />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

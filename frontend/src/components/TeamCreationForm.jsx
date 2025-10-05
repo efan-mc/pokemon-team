@@ -65,25 +65,31 @@ export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
 
   if (createdTeam) {
     return (
-      <div>
-        <div className="text-center">
+      <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 max-w-md mx-auto">
+        <div className="text-2xl font-semibold mb-4">
           <h2>Team Created</h2>
         </div>
 
-        <div>
-          <div>
+        <div className="space-y-3">
+          <div className="bg-gray-900/50 p-3 rounded-lg">
             <span>Team Name:</span> {createdTeam.name}
           </div>
-          <div>
+          <div className="capitalize bg-gray-900/50 p-3 rounded-lg">
             <span>Format:</span> {createdTeam.format}
           </div>
-          <div>
+          <div className="bg-gray-900/50 p-3 rounded-lg">
             <span>Team Code:</span>
             <div>{createdTeam.slug}</div>
           </div>
         </div>
 
-        <button onClick={handleCreateAnother}>Create Another Team</button>
+        <button
+          onClick={handleCreateAnother}
+          className="w-full px-4 py-2 mt-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium
+  transition-colors"
+        >
+          Create Another Team
+        </button>
       </div>
     );
   }

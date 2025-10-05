@@ -9,6 +9,7 @@ import TeamGrid from "../components/TeamGrid";
 import PokemonSearch from "../components/PokemonSearch";
 import TeamCreationForm from "../components/TeamCreationForm";
 import TypeChart from "../components/TypeChart";
+import Footer from "../components/Footer";
 
 function TeamBuilder() {
   const [team, setTeam] = useState(() => {
@@ -115,8 +116,8 @@ function TeamBuilder() {
           return {
             ...pokemonData,
             availableAbilities: pokemonDetails.abilities,
-            selectedAbility: formatName(mon.ability) || null,
-            selectedNature: formatName(mon.nature) || null,
+            selectedAbility: mon.ability ? formatName(mon.ability) : null,
+            selectedNature: mon.nature ? formatName(mon.nature) : null,
             availableMoves: pokemonDetails.moves,
             selectedMoves: selectedMoves,
           };
@@ -164,8 +165,8 @@ function TeamBuilder() {
           return {
             ...pokemonData,
             availableAbilities: pokemonDetails.abilities,
-            selectedAbility: formatName(member.ability) || null,
-            selectedNature: formatName(member.nature) || null,
+            selectedAbility: member.ability ? formatName(member.ability) : null,
+            selectedNature: member.nature ? formatName(member.nature) : null,
             availableMoves: pokemonDetails.moves,
             selectedMoves: selectedMoves,
           };
@@ -192,21 +193,39 @@ function TeamBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 text-gray-100 p-6">
-      <div className="max-w-7xl justify-between">
+    <div className="min-h-screen text-gray-100 flex flex-col">
+      <div className="flex-1 p-6">
         <h1 className="text-4xl font-bold mb-6">Pokémon Team Builder</h1>
 
         {/* Action Button */}
-        <div className="flex gap-3 mb-8 justify-center">
+
+        <div className="flex gap-3 mb-8 justify-center flex-wrap">
           <button
             onClick={() => setShowImportBox(!showImportBox)}
             className="px-4 py-2 rounded font-medium bg-blue-600 hover:bg-blue-500 transition-colors"
           >
-            Import
+            {showImportBox ? "Hide Import" : "Import Team"}
           </button>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={teamSlug}
+              onChange={(e) => setTeamSlug(e.target.value)}
+              placeholder="Enter a team code"
+              className="px-3 py-2 bg-gray-800 border border-gray-700 
+            rounded-2xl"
+            />
+            <button
+              onClick={handleLoadTeam}
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded font-medium
+  transition-colors"
+            >
+              Load
+            </button>
+          </div>
 
           <button
-            onClick={() => setShowTeamForm(true)}
+            onClick={() => setShowTeamForm(!showTeamForm)}
             className="px-4 py-2 rounded font-medium bg-blue-600 hover:bg-blue-500 transition-colors"
           >
             Save Team
@@ -233,34 +252,48 @@ function TeamBuilder() {
           </div>
         )}
 
+        {/* Team Creation Confirm */}
+
+        <div className="mb-8">
+          {showTeamForm && (
+            <TeamCreationForm
+              team={team}
+              onCreateTeam={(createdTeam) => {
+                console.log("Team created:", createdTeam);
+                setSavedTeamSlug(createdTeam.slug);
+                localStorage.removeItem("tempTeam");
+              }}
+              onClear={() => setTeam(Array(6).fill(null))}
+              className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium
+  transition-colors"
+            />
+          )}
+        </div>
+
+        {savedTeamSlug && (
+          <div className="mb-6 p-4 bg-green/30 border border-green-700 rounded-2xl items-center justify-between max-w-md mx-auto">
+            Team saved! Share code: {savedTeamSlug}
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/t/${savedTeamSlug}`
+                );
+              }}
+              className="w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-2xl mt-4"
+            >
+              Copy Link
+            </button>
+          </div>
+        )}
+
         {/* Pokemon Search */}
 
-        <div className="mb-6">
+        <div className="mb-6 flex justify-center">
           <PokemonSearch onAdd={addPokemonToTeam} />
           {isLoading && (
             <div className="text-yellow-200">Adding Pokemon to team...</div>
           )}
           {error && <div className="text-red-500">Error: {error}</div>}
-        </div>
-
-        {/* Load Team */}
-
-        <div className="mb-8">
-          <input
-            type="text"
-            value={teamSlug}
-            onChange={(e) => setTeamSlug(e.target.value)}
-            placeholder="Enter a team code"
-            className="flex-1 max-w-sm px-3 py-2 bg-gray-800 border border-gray-700 
-            rounded-2xl"
-          />
-          <button
-            onClick={handleLoadTeam}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded font-medium
-  transition-colors"
-          >
-            Load Team
-          </button>
         </div>
 
         {/* Team Grid */}
@@ -285,47 +318,14 @@ function TeamBuilder() {
           {analysisError && <div>Error: {analysisError}</div>}
         </div>
 
-        {/* Team Creation Confirm */}
-
-        <div className="mb-8">
-          {showTeamForm && (
-            <TeamCreationForm
-              team={team}
-              onCreateTeam={(createdTeam) => {
-                console.log("Team created:", createdTeam);
-                setSavedTeamSlug(createdTeam.slug);
-                localStorage.removeItem("tempTeam");
-              }}
-              onClear={() => setTeam(Array(6).fill(null))}
-              className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium
-  transition-colors"
-            />
-          )}
-        </div>
-
-        {savedTeamSlug && (
-          <div className="mb-6 p-4 bg-green/30 border border-green-700 rounded-2xl items-center justify-between">
-            Team saved! Share code: {savedTeamSlug}
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `http://localhost:5173/t/${savedTeamSlug}`
-                );
-              }}
-              className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium
-  transition-colors"
-            >
-              Copy Link
-            </button>
-          </div>
-        )}
-
         {/* Type Chart */}
 
         <div className="mt-8">
           <TypeChart team={team} analysisData={analysisData} />
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
