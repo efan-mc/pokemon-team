@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { useTeamApi } from "../hooks/useTeamApi";
 
-export default function TeamCreationForm({
-  team,
-  onCreateTeam,
-  onClear,
-  onClose,
-}) {
+export default function TeamCreationForm({ team, onCreateTeam, onClear }) {
   const [teamName, setTeamName] = useState("");
   const [format, setFormat] = useState("singles");
   const [createdTeam, setCreatedTeam] = useState(null);
@@ -94,10 +89,10 @@ export default function TeamCreationForm({
   }
 
   return (
-    <div>
-      <h2>Save Current Team</h2>
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Save Current Team</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="teamName">Team Name</label>
           <input
@@ -107,6 +102,7 @@ export default function TeamCreationForm({
             onChange={(e) => setTeamName(e.target.value)}
             maxLength={50}
             required
+            className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700 rounded-2xl"
           />
         </div>
 
@@ -116,18 +112,23 @@ export default function TeamCreationForm({
             id="format"
             value={format}
             onChange={(e) => setFormat(e.target.value)}
+            className="w-full px-3 py-2 bg-gray-900/50 border border-gray-700 rounded-2xl"
           >
-            {formats.map((f) => {
+            {formats.map((f) => (
               <option key={f.value} value={f.value}>
                 {f.label}
-              </option>;
-            })}
+              </option>
+            ))}
           </select>
         </div>
 
         {error && <div className="text-red-500">Error: {error}</div>}
 
-        <button type="submit" disabled={isLoading}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-2xl"
+        >
           {isLoading ? "Creating Team..." : "Save Team"}
         </button>
       </form>

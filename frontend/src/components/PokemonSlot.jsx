@@ -29,7 +29,7 @@ export default function PokemonSlot({
     return (
       <div
         className="border-2 border-dashed border-gray-600 bg-gray-800/30 rounded-2xl p-6
-  flex items-center justify-center min-h-[280px] min-w-[280px]"
+  flex items-center justify-center min-h-[280px]"
       >
         <div>
           <div className="text-gray-400">Empty Slot</div>
